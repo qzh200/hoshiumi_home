@@ -149,7 +149,7 @@ background:
 public/
 ├── favicon.svg          # 网站图标
 └── images/
-    ├── avatar.svg       # 头像占位（正式使用建议替换为 webp/png）
+    ├── avatar.webp      # 头像图片（建议 1:1 正方形，WebP/PNG 均可）
     └── og.svg           # 社交分享图占位（建议替换为 1200×630 图片）
 ```
 

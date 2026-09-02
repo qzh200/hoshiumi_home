@@ -43,7 +43,7 @@ site:
   favicon: /favicon.svg
 
   # 头像图片（左侧圆形展示，建议正方形 1:1，如 256×256 以上）
-  avatar: /images/avatar.svg
+  avatar: /images/avatar.webp
 
   # 默认 Open Graph 分享图（当 seo.openGraph.image 未设置时使用）
   defaultOgImage: /images/og.svg
@@ -216,19 +216,20 @@ theme:
   # 是否显示右上角主题切换按钮；false 时按钮隐藏、强制使用 default
   allowSwitch: true
 
-  # 浅色主题：主色（淡蓝）/ 辅助色（淡粉）/ 强调色（淡紫）
+  # 浅色主题：主色（清爽蓝）/ 辅助色（樱花粉）/ 强调色（星雾紫）
+  # 配色取自头像：银白发、蓝紫渐变眼睛、淡粉脸颊
   light:
-    background: '#fdfbff'
-    primary: '#8da7e8'
-    secondary: '#e6a6cb'
-    accent: '#b9a7e8'
+    background: '#f4f6fe'
+    primary: '#7f9df2'
+    secondary: '#f0a9cc'
+    accent: '#9d92ec'
 
-  # 深色主题：深蓝 / 靛蓝基调，避免纯黑
+  # 深色主题：深靛蓝基调（呼应头像下缘的深蓝），避免纯黑
   dark:
-    background: '#111426'
-    primary: '#9eb8ff'
-    secondary: '#e7a8cf'
-    accent: '#c4b4ff'
+    background: '#1c2145'
+    primary: '#9fb6ff'
+    secondary: '#f2b4dc'
+    accent: '#bdb0ff'
 
   # 卡片玻璃质感
   card:
