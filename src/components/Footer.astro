@@ -1,0 +1,23 @@
+---
+/**
+ * Footer —— 简洁页脚
+ *
+ * 标题 / 描述 / 版权文本均来自 config/site.yaml 的 footer 块；
+ * 版权中的 {year} 占位符会按 startYear 自动渲染为单年或年份区间。
+ */
+import { getSiteConfig } from '../config/loader';
+import { renderCopyright } from '../config/helpers';
+
+const config = getSiteConfig();
+const { footer, site } = config;
+---
+
+{
+  footer.enabled && (
+    <footer class="footer">
+      <p class="footer__title">{footer.title}</p>
+      <p class="footer__desc">{footer.description}</p>
+      <p class="footer__copy">{renderCopyright(footer.copyright, site.startYear)}</p>
+    </footer>
+  )
+}

@@ -1,0 +1,22 @@
+---
+/**
+ * Icon —— 通用图标渲染
+ *
+ * 从 config/site.yaml 读取形如 `lucide:book-open` 的图标声明，
+ * 在构建期把 lucide-static 中的 SVG 原样内联输出：
+ * 零运行时 JS、随 HTML 一并缓存。
+ *
+ * Props:
+ *  - name: 图标声明（必须来自配置，组件内部不维护任何图标列表）
+ */
+import { loadLucideIconSvg } from '../config/icons';
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+const svg = loadLucideIconSvg(name);
+---
+
+<span class="icon" aria-hidden="true" set:html={svg} />

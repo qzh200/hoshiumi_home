@@ -1,0 +1,89 @@
+---
+/**
+ * Hero —— 首屏标题区
+ *
+ * 标题、中文名、描述、装饰语、头像全部来自 config/site.yaml 的 hero 块，
+ * 本组件不做任何内容兜底或写死。
+ */
+import { getSiteConfig } from '../config/loader';
+import Icon from './Icon.astro';
+
+const config = getSiteConfig();
+const { hero, site, animation } = config;
+
+const entrance = animation.enabled && animation.entrance.enabled;
+
+/** 描述按换行拆成多行文本（过滤空行） */
+const descriptionLines = hero.description
+  .split('\n')
+  .map((line) => line.trim())
+  .filter((line) => line.length > 0);
+
+const showAvatar = hero.avatar?.enabled === true;
+const showDecoration = Boolean(hero.decoration?.enabled && hero.decoration?.text);
+const decorationText = hero.decoration?.text ?? '';
+
+/** 依次入场的小节拍（固定编排，非站点信息） */
+const sparkDelay = entrance ? 60 : 0;
+const titleDelay = entrance ? 130 : 0;
+const subtitleDelay = entrance ? 200 : 0;
+const descDelay = entrance ? 270 : 0;
+const decoDelay = entrance ? 340 : 0;
+---
+
+{
+  hero.enabled && (
+    <section class="hero">
+      {showAvatar && (
+        <img
+          class:list={['hero__avatar', { entrance }]}
+          style={entrance ? `--delay:0ms` : undefined}
+          src={site.avatar}
+          alt=""
+          width={96}
+          height={96}
+          loading="eager"
+          decoding="async"
+        />
+      )}
+
+      <span
+        class:list={['hero__spark', { entrance }]}
+        style={entrance ? `--delay:${sparkDelay}ms` : undefined}
+        aria-hidden="true"
+      >
+        <Icon name="lucide:sparkles" />
+      </span>
+
+      <h1
+        class:list={['hero__title', { entrance }]}
+        style={entrance ? `--delay:${titleDelay}ms` : undefined}
+      >
+        {hero.title}
+      </h1>
+
+      <p
+        class:list={['hero__subtitle', { entrance }]}
+        style={entrance ? `--delay:${subtitleDelay}ms` : undefined}
+      >
+        {hero.subtitle}
+      </p>
+
+      <p
+        class:list={['hero__desc', { entrance }]}
+        style={entrance ? `--delay:${descDelay}ms` : undefined}
+      >
+        {descriptionLines.map((line) => <span>{line}</span>)}
+      </p>
+
+      {showDecoration && (
+        <p
+          class:list={['hero__deco', { entrance }]}
+          style={entrance ? `--delay:${decoDelay}ms` : undefined}
+        >
+          {decorationText}
+        </p>
+      )}
+    </section>
+  )
+}

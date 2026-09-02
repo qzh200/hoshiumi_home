@@ -1,0 +1,5 @@
+# robots.txt
+# 允许所有搜索引擎抓取本站；如需屏蔽请自行修改。
+
+User-agent: *
+Allow: /

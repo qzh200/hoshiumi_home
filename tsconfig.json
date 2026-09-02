@@ -1,0 +1,13 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    // 配置加载器会在构建期使用 Node 内置模块读取 YAML / 图标文件
+    "types": ["node"],
+    // 未使用变量与参数在 astro check 时报错，保持代码整洁
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    // 明确不允许隐式 any
+    "noImplicitAny": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.astro"]
+}

@@ -1,0 +1,36 @@
+---
+/**
+ * 首页 —— 入口页
+ *
+ * 唯一的页面路由。整个页面 = Layout(SEO/主题) + 背景 + Hero + 卡片网格 + 页脚，
+ * 其中除了「跳转链接」之类的通用文案外，没有任何站点信息 ——
+ * 全部内容都来自 config/site.yaml。
+ */
+import Layout from '../layouts/Layout.astro';
+import Background from '../components/Background.astro';
+import Hero from '../components/Hero.astro';
+import SiteGrid from '../components/SiteGrid.astro';
+import Footer from '../components/Footer.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { getSiteConfig } from '../config/loader';
+
+const config = getSiteConfig();
+const showThemeSwitch = config.theme.allowSwitch;
+---
+
+<Layout>
+  <Background />
+
+  <div class="page-shell">
+    <a class="skip-link" href="#content">跳到主要内容</a>
+
+    {showThemeSwitch && <ThemeToggle />}
+
+    <main id="content" class="page-main">
+      <Hero />
+      <SiteGrid />
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

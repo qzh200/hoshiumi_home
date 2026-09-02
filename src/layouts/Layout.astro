@@ -1,0 +1,207 @@
+---
+/**
+ * Layout —— 页面骨架
+ *
+ * 职责：
+ *   1. 根据 config/site.yaml 输出全部 SEO / OG / theme-color / JSON-LD；
+ *   2. 把配置中的颜色与布局数值编译成 CSS 变量注入 <head>，
+ *      全局样式与组件一律通过 var(--x) 消费，避免把站点信息写进 CSS；
+ *   3. 内置「主题引导脚本」：首帧渲染前从 localStorage / 系统偏好恢复主题，
+ *      避免暗色用户看到白屏闪烁。
+ */
+import '../styles/global.css';
+import type { SiteConfig } from '../config/schema';
+import { getSiteConfig } from '../config/loader';
+import { ogImageUrl } from '../config/helpers';
+
+interface Props {
+  /** 可选：覆盖 config seo.title（供未来多页面复用） */
+  title?: string;
+  /** 可选：覆盖 config seo.description */
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const config = getSiteConfig();
+const { site, theme, seo, animation } = config;
+
+const pageTitle = (title ?? '').trim() || seo.title;
+const pageDescription = (description ?? '').trim() || seo.description;
+const keywords = site.keywords.join(', ');
+
+const ogImage = seo.openGraph.enabled ? ogImageUrl(config) : '';
+const canonical = seo.canonical;
+
+/* ------------------------------------------------------------------ */
+/* 把配置编译成 CSS 变量字符串                                        */
+/* ------------------------------------------------------------------ */
+function buildThemeStyle(cfg: SiteConfig): string {
+  const { layout, theme: t } = cfg;
+  const card = t.card;
+  const light = t.light;
+  const dark = t.dark;
+
+  return [
+    ':root{',
+    `--color-bg:${light.background};`,
+    `--color-primary:${light.primary};`,
+    `--color-secondary:${light.secondary};`,
+    `--color-accent:${light.accent};`,
+    `--layout-max-width:${layout.maxWidth};`,
+    `--grid-gap:${layout.gap};`,
+    `--grid-cols:${layout.columns};`,
+    `--grid-cols-mobile:${layout.mobile.columns};`,
+    `--card-radius:${card.radius};`,
+    `--card-blur:${card.blur};`,
+    `--card-border-opacity:${card.borderOpacity};`,
+    `--card-bg-opacity:${card.bgOpacity};`,
+    `--lift-y:${cfg.animation.card.translateY}px;`,
+    '}',
+    ':root[data-theme=\'dark\']{',
+    `--color-bg:${dark.background};`,
+    `--color-primary:${dark.primary};`,
+    `--color-secondary:${dark.secondary};`,
+    `--color-accent:${dark.accent};`,
+    '}',
+  ].join('');
+}
+
+const themeStyle = buildThemeStyle(config);
+
+/* ------------------------------------------------------------------ */
+/* favicon MIME 探测                                                  */
+/* ------------------------------------------------------------------ */
+function faviconMime(path: string): string {
+  const ext = path.split('?')[0]!.split('.').pop()!.toLowerCase();
+  const map: Record<string, string> = {
+    svg: 'image/svg+xml',
+    png: 'image/png',
+    webp: 'image/webp',
+    ico: 'image/x-icon',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    avif: 'image/avif',
+  };
+  return map[ext] ?? 'image/png';
+}
+
+const structuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.title,
+  alternateName: site.alternate,
+  url: site.url,
+  description: site.description,
+});
+---
+
+<!doctype html>
+<html
+  lang={site.language}
+  data-theme-default={theme.default}
+  data-allow-switch={theme.allowSwitch}
+  data-respect-motion={animation.respectReducedMotion}
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    {keywords && <meta name="keywords" content={keywords} />}
+
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type={faviconMime(site.favicon)} href={site.favicon} />
+
+    <!-- 浏览器 UI 配色跟随主题 -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content={theme.light.background} />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content={theme.dark.background} />
+
+    {
+      seo.openGraph.enabled && (
+        <>
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content={site.title} />
+          <meta property="og:title" content={pageTitle} />
+          <meta property="og:description" content={pageDescription} />
+          <meta property="og:url" content={canonical} />
+          {ogImage && <meta property="og:image" content={ogImage} />}
+        </>
+      )
+    }
+
+    {
+      seo.twitter.enabled && (
+        <>
+          <meta name="twitter:card" content={seo.twitter.card} />
+          <meta name="twitter:title" content={pageTitle} />
+          <meta name="twitter:description" content={pageDescription} />
+          {ogImage && <meta name="twitter:image" content={ogImage} />}
+        </>
+      )
+    }
+
+    <script is:inline type="application/ld+json" set:html={structuredData} />
+
+    <!-- 主题引导：首帧前恢复用户主题，避免闪烁（纯内联，无外部请求） -->
+    <script is:inline>
+      (function () {
+        try {
+          var KEY = 'startpage-theme';
+          var root = document.documentElement;
+          var allowSwitch = root.getAttribute('data-allow-switch') !== 'false';
+          var def = root.getAttribute('data-theme-default') || 'system';
+          var stored = null;
+          try {
+            stored = localStorage.getItem(KEY);
+          } catch (e) {
+            /* localStorage 不可用时静默回退 */
+          }
+          var choice = stored && allowSwitch ? stored : def;
+          if (choice !== 'light' && choice !== 'dark' && choice !== 'system') {
+            choice = 'system';
+          }
+          var mq = window.matchMedia('(prefers-color-scheme: dark)');
+          function effective(c) {
+            return c === 'system' ? (mq.matches ? 'dark' : 'light') : c;
+          }
+          function apply() {
+            root.setAttribute('data-theme', effective(choice));
+            root.setAttribute('data-theme-choice', choice);
+          }
+          apply();
+          if (typeof mq.addEventListener === 'function') {
+            mq.addEventListener('change', function () {
+              if (choice === 'system') apply();
+            });
+          }
+          window.siteTheme = {
+            get: function () {
+              return choice;
+            },
+            set: function (next) {
+              if (!allowSwitch) return;
+              choice =
+                next === 'light' || next === 'dark' || next === 'system' ? next : 'system';
+              try {
+                localStorage.setItem(KEY, choice);
+              } catch (e) {
+                /* 忽略写入失败 */
+              }
+              apply();
+            },
+          };
+        } catch (e) {
+          /* 任何异常都不应影响页面渲染 */
+        }
+      })();
+    </script>
+
+    <!-- 由配置编译出的主题 CSS 变量 -->
+    <style is:inline set:html={themeStyle} />
+  </head>
+
+  <body>
+    <slot />
+  </body>
+</html>

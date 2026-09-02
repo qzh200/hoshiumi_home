@@ -1,0 +1,24 @@
+---
+/**
+ * SiteGrid —— 站点卡片网格（Bento / Grid）
+ *
+ * 读取配置中 enabled 的链接并按 YAML 顺序渲染。
+ * 布局类型由 config/site.yaml layout.type 决定：
+ *   - bento：size: large（或 featured）的卡片自动跨整行
+ *   - grid ：所有卡片等宽排列（忽略尺寸差异）
+ * 列数 / 间距 / 最大宽度 / 移动端列数均来自 layout 配置。
+ */
+import { getSiteConfig } from '../config/loader';
+import { enabledLinks } from '../config/helpers';
+import SiteCard from './SiteCard.astro';
+
+const config = getSiteConfig();
+const links = enabledLinks(config);
+
+const isBento = config.layout.type === 'bento';
+const uniformClass = isBento ? '' : 'site-grid--uniform';
+---
+
+<nav class:list={['site-grid', uniformClass]}>
+  {links.map((link, index) => <SiteCard link={link} index={index} />)}
+</nav>

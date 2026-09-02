@@ -1,0 +1,42 @@
+---
+/**
+ * ThemeToggle —— 极简主题切换按钮（浅色 / 深色 / 跟随系统）
+ *
+ * 实际的主题状态机在 Layout 头部的内联脚本中（head 早期执行，避免闪烁），
+ * 该组件只负责渲染按钮并把点击事件交给 window.siteTheme 控制器。
+ * 图标显示由 <html data-theme-choice> 属性驱动，见 global.css。
+ */
+import Icon from './Icon.astro';
+
+const ICONS = [
+  { choice: 'light', icon: 'lucide:sun' },
+  { choice: 'dark', icon: 'lucide:moon' },
+  { choice: 'system', icon: 'lucide:monitor' },
+] as const;
+---
+
+<button class="theme-toggle" type="button" data-theme-toggle aria-label="切换主题（浅色 / 深色 / 跟随系统）">
+  {ICONS.map(({ choice, icon }) => (
+    <span class:list={['theme-toggle__icon', `theme-toggle__icon--${choice}`]}>
+      <Icon name={icon} />
+    </span>
+  ))}
+</button>
+
+<script>
+  interface ThemeApi {
+    set: (choice: string) => void;
+    get: () => string;
+  }
+
+  const api = (window as Window & { siteTheme?: ThemeApi }).siteTheme;
+  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+
+  if (api && button) {
+    button.addEventListener('click', () => {
+      // 浅色 → 深色 → 跟随系统 → 浅色，循环切换
+      const next: Record<string, string> = { light: 'dark', dark: 'system', system: 'light' };
+      api.set(next[api.get()] ?? 'system');
+    });
+  }
+</script>

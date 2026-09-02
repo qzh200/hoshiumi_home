@@ -1,0 +1,30 @@
+{
+  "name": "hoshiumi-startpage",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "一个安静、清新、配置驱动的个人起始页 / 入口页主题（Astro + Tailwind CSS）。修改 config/site.yaml 即可拥有你自己的导航门户。",
+  "packageManager": "pnpm@10.33.2",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.10",
+    "lucide-static": "^1.39.0",
+    "tailwindcss": "^4.3.3",
+    "yaml": "^2.9.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.15.0",
+    "typescript": "^5.9.3"
+  }
+}

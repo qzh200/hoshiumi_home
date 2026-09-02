@@ -1,0 +1,62 @@
+---
+/**
+ * SiteCard —— 单个站点卡片
+ *
+ * 卡片完全由 config/site.yaml 中 links[] 的某一项生成：
+ * 标题、中文名、描述、图标、地址、尺寸、是否大卡、是否可悬浮，全部来自配置。
+ * 组件内没有任何针对特定站点 id 的特殊逻辑。
+ */
+import type { SiteLink } from '../config/schema';
+import { getSiteConfig } from '../config/loader';
+import { displayUrlOf, linkTarget } from '../config/helpers';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** links[] 中的一项（由 SiteGrid 从配置读出后传入） */
+  link: SiteLink;
+  /** 在 links 数组中的序号，用于入场 stagger */
+  index: number;
+}
+
+const { link, index } = Astro.props;
+const config = getSiteConfig();
+
+const entrance = config.animation.enabled && config.animation.entrance.enabled;
+const delay = entrance ? index * config.animation.entrance.stagger : 0;
+
+const hoverEnabled = config.animation.enabled && config.animation.card.hover;
+const urlText = displayUrlOf(link);
+const { target, rel } = linkTarget(link);
+
+const sizeClass = link.size === 'large' ? 'site-card--large' : '';
+---
+
+<a
+  class:list={['site-card', sizeClass, { entrance }]}
+  data-size={link.size}
+  data-hover={hoverEnabled}
+  href={link.url}
+  target={target}
+  rel={rel}
+  style={entrance ? `--delay:${delay}ms` : undefined}
+>
+  <span class="site-card__icon" aria-hidden="true">
+    <Icon name={link.icon} />
+  </span>
+
+  <span class="site-card__body">
+    <span class="site-card__head">
+      <span class="site-card__title">{link.title}</span>
+      <span class="site-card__name">{link.name}</span>
+    </span>
+
+    <span class="site-card__desc">{link.description}</span>
+
+    <span class="site-card__foot">
+      <span>{urlText}</span>
+      <span class="site-card__arrow" aria-hidden="true">
+        <Icon name="lucide:arrow-up-right" />
+      </span>
+    </span>
+  </span>
+</a>
