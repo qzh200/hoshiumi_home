@@ -81,7 +81,8 @@ const siteSchema = z
       .number()
       .int('必须是整数年份')
       .min(1900, '年份过小')
-      .max(new Date().getFullYear() + 1, '年份不能超过明年'),
+      // 上界用固定合理值，避免依赖运行环境时钟（不同构建沙箱年份可能不同）
+      .max(2999, '年份超出合理范围（1900 ~ 2999）'),
 
     keywords: z.array(z.string().trim().min(1, '关键词不能为空字符串')).max(40, '关键词最多 40 个'),
   })

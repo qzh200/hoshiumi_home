@@ -5,12 +5,19 @@ node_modules/
 dist/
 .astro/
 
+# 构建前生成的图标映射（由 scripts/generate-icons.mjs 生成）
+src/generated/
+
 # 本地环境
 .env
 .env.*
 *.local
 .DS_Store
 Thumbs.db
+
+# pnpm / wrangler 本地缓存
+.pnpm-store/
+.wrangler/
 
 # 编辑器 / 系统
 .vscode/*

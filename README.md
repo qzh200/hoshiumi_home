@@ -187,14 +187,16 @@ public/
 │   ├── favicon.svg
 │   ├── robots.txt
 │   └── images/              # avatar / og 等静态资源
+├── scripts/
+│   └── generate-icons.mjs   # 构建前自动生成 src/generated/site-icons.ts
 ├── src/
 │   ├── components/          # Background / Hero / SocialLinks / SiteGrid /
 │   │                        # SiteCard / ThemeToggle / Footer / Icon
 │   ├── config/              # 配置加载层
 │   │   ├── types.ts         #   枚举与类型（单一来源）
 │   │   ├── schema.ts        #   Zod Schema 与中文错误提示
-│   │   ├── loader.ts        #   YAML → 校验 → SiteConfig
-│   │   ├── icons.ts         #   lucide 图标构建期解析
+│   │   ├── loader.ts        #   site.yaml(?raw 内联) → 校验 → SiteConfig
+│   │   ├── icons.ts         #   图标运行时查表（生成产物）
 │   │   └── helpers.ts       #   派生工具
 │   ├── layouts/Layout.astro # SEO + 主题 CSS 变量 + 主题引导脚本
 │   ├── pages/index.astro    # 唯一页面（左右分栏）
@@ -204,14 +206,17 @@ public/
 └── tsconfig.json
 ```
 
+> `src/generated/` 由构建自动生成（`pnpm dev / build / check` 前自动执行
+> `scripts/generate-icons.mjs`），已加入 .gitignore，无需提交。
+
 数据流：
 
 ```text
 config/site.yaml
-      ↓ YAML 解析
+      ↓ 构建期：?raw 内联 + scripts/generate-icons.mjs 提取图标
    Zod 校验（失败即中断构建）
       ↓
-  SiteConfig（强类型）
+  SiteConfig（强类型，运行期零文件 IO）
       ↓
   Astro 组件只读渲染
 ```
@@ -223,7 +228,11 @@ config/site.yaml
 
 **图标怎么找？**
 到 https://lucide.dev/icons 搜索，写成 `lucide:名称` 即可。
-构建时会校验图标是否存在，写错会直接报错提示。
+构建前的生成脚本会校验图标是否存在，写错会直接报错提示。
+
+**用 wrangler / Cloudflare Workers 构建报错？**
+配置与图标都在打包期内联、运行时零文件 IO，纯静态构建和 Cloudflare
+自动追加的 `@astrojs/cloudflare` 适配器流程均兼容，无需额外配置。
 
 **不想要某个区域？**
 `hero.enabled` / `footer.enabled` 设 `false`；`theme.allowSwitch: false` 隐藏主题按钮；
