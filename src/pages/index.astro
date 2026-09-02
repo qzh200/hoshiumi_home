@@ -2,13 +2,13 @@
 /**
  * 首页 —— 入口页
  *
- * 唯一的页面路由。整个页面 = Layout(SEO/主题) + 背景 + Hero + 卡片网格 + 页脚，
- * 其中除了「跳转链接」之类的通用文案外，没有任何站点信息 ——
- * 全部内容都来自 config/site.yaml。
+ * 桌面端为「左简介 / 右卡片」的双栏布局；移动端纵向堆叠。
+ * 除通用文案外不包含任何站点信息，全部内容来自 config/site.yaml。
  */
 import Layout from '../layouts/Layout.astro';
 import Background from '../components/Background.astro';
 import Hero from '../components/Hero.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import SiteGrid from '../components/SiteGrid.astro';
 import Footer from '../components/Footer.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
@@ -27,8 +27,16 @@ const showThemeSwitch = config.theme.allowSwitch;
     {showThemeSwitch && <ThemeToggle />}
 
     <main id="content" class="page-main">
-      <Hero />
-      <SiteGrid />
+      <div class="split">
+        <aside class="intro" aria-label="站点简介">
+          <Hero />
+          <SocialLinks />
+        </aside>
+
+        <section aria-label="站点入口" class="site-card-area">
+          <SiteGrid />
+        </section>
+      </div>
     </main>
 
     <Footer />

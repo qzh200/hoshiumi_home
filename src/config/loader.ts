@@ -87,9 +87,12 @@ export function getSiteConfig(): SiteConfig {
 
     const config = result.data;
 
-    // 预热并校验所有链接图标，确保图标名可解析、错误在构建期尽早暴露
+    // 预热并校验所有链接图标与社交图标，确保图标名可解析、错误在构建期尽早暴露
     for (const link of config.links) {
       loadLucideIconSvg(link.icon);
+    }
+    for (const item of config.social) {
+      loadLucideIconSvg(item.icon);
     }
 
     cachedConfig = config;

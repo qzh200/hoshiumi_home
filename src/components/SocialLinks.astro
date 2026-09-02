@@ -1,0 +1,36 @@
+---
+/**
+ * SocialLinks —— 左侧简介下方的社交入口行（可选）
+ *
+ * 内容来自 config/site.yaml 的 social 数组（默认可为空）：
+ * 每项渲染为一个带 aria-label 的小圆形图标链接。
+ */
+import { getSiteConfig } from '../config/loader';
+import { isExternalUrl } from '../config/helpers';
+import Icon from './Icon.astro';
+
+const config = getSiteConfig();
+const socials = config.social.filter((item) => item.enabled);
+---
+
+{
+  socials.length > 0 && (
+    <div class="social" role="list">
+      {socials.map((item) => {
+        const external = isExternalUrl(item.url);
+        return (
+          <a
+            class="social__link"
+            role="listitem"
+            href={item.url}
+            aria-label={item.label}
+            title={item.label}
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            <Icon name={item.icon} />
+          </a>
+        );
+      })}
+    </div>
+  )
+}

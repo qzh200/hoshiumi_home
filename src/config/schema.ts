@@ -130,21 +130,11 @@ const linkSchema = z
 
     /** 英文标题（卡片主标题） */
     title: z.string().trim().min(1, '不能为空字符串'),
-    /** 中文名 / 别名（副标题） */
+    /** 中文名 / 别名（小字排版） */
     name: z.string().trim().min(1, '不能为空字符串'),
     description: z.string().trim().min(1, '不能为空字符串'),
 
     url: internalOrHttpPath,
-
-    /** 展示用域名；留空时自动从 url 推导（可选） */
-    displayUrl: z
-      .string()
-      .trim()
-      .refine(
-        (v) => v === '' || !/\s/.test(v),
-        '展示地址不能包含空格，请去掉协议前缀，例如 blog.hoshiumi.xyz'
-      )
-      .optional(),
 
     /** 图标，格式 lucide:图标名（如 lucide:book-open） */
     icon: z
@@ -152,8 +142,30 @@ const linkSchema = z
       .trim()
       .regex(/^lucide:[a-z0-9-]+$/, '图标格式应为 lucide:图标名，例如 lucide:book-open'),
 
-    featured: z.boolean(),
-    size: z.enum(CARD_SIZES),
+    /** 以下两项仅在 layout.type: bento 时参与布局，可省略 */
+    featured: z.boolean().default(false),
+    size: z.enum(CARD_SIZES).default('normal'),
+  })
+  .strict('存在未知字段，请检查拼写');
+
+/* ------------------------------------------------------------------ */
+/* 社交入口（左侧简介下方，可选）                                       */
+/* ------------------------------------------------------------------ */
+
+const socialItemSchema = z
+  .object({
+    enabled: z.boolean(),
+    /** 无障碍名称（会作为 aria-label 与悬浮提示） */
+    label: z.string().trim().min(1, '不能为空字符串'),
+    /** 支持 http(s) 链接或 mailto: 邮箱 */
+    url: z
+      .string()
+      .min(1, '不能为空字符串')
+      .refine((v) => /^(https?:\/\/|mailto:)/i.test(v), '必须是 http(s) 链接或 mailto: 邮箱地址'),
+    icon: z
+      .string()
+      .trim()
+      .regex(/^lucide:[a-z0-9-]+$/, '图标格式应为 lucide:图标名，例如 lucide:rss'),
   })
   .strict('存在未知字段，请检查拼写');
 
@@ -320,6 +332,7 @@ export const siteConfigSchema = z
     site: siteSchema,
     hero: heroSchema,
     links: z.array(linkSchema),
+    social: z.array(socialItemSchema).default([]),
     layout: layoutSchema,
     theme: themeSchema,
     background: backgroundSchema,

@@ -1,12 +1,11 @@
 ---
 /**
- * Hero —— 首屏标题区
+ * Hero —— 左侧简介区（v2：空灵 / 左对齐）
  *
- * 标题、中文名、描述、装饰语、头像全部来自 config/site.yaml 的 hero 块，
- * 本组件不做任何内容兜底或写死。
+ * 头像、站名、中文名、标语、装饰语全部来自 config/site.yaml 的 hero 块，
+ * 本组件不做任何内容兜底或写死。社交行由 SocialLinks 单独渲染。
  */
 import { getSiteConfig } from '../config/loader';
-import Icon from './Icon.astro';
 
 const config = getSiteConfig();
 const { hero, site, animation } = config;
@@ -24,54 +23,48 @@ const showDecoration = Boolean(hero.decoration?.enabled && hero.decoration?.text
 const decorationText = hero.decoration?.text ?? '';
 
 /** 依次入场的小节拍（固定编排，非站点信息） */
-const sparkDelay = entrance ? 60 : 0;
-const titleDelay = entrance ? 130 : 0;
-const subtitleDelay = entrance ? 200 : 0;
-const descDelay = entrance ? 270 : 0;
-const decoDelay = entrance ? 340 : 0;
+const delays = {
+  avatar: 0,
+  title: entrance ? 90 : 0,
+  subtitle: entrance ? 170 : 0,
+  desc: entrance ? 250 : 0,
+  deco: entrance ? 320 : 0,
+} as const;
 ---
 
 {
   hero.enabled && (
-    <section class="hero">
+    <div class="hero">
       {showAvatar && (
         <img
           class:list={['hero__avatar', { entrance }]}
-          style={entrance ? `--delay:0ms` : undefined}
+          style={entrance ? `--delay:${delays.avatar}ms` : undefined}
           src={site.avatar}
           alt=""
-          width={96}
-          height={96}
+          width={92}
+          height={92}
           loading="eager"
           decoding="async"
         />
       )}
 
-      <span
-        class:list={['hero__spark', { entrance }]}
-        style={entrance ? `--delay:${sparkDelay}ms` : undefined}
-        aria-hidden="true"
-      >
-        <Icon name="lucide:sparkles" />
-      </span>
-
       <h1
         class:list={['hero__title', { entrance }]}
-        style={entrance ? `--delay:${titleDelay}ms` : undefined}
+        style={entrance ? `--delay:${delays.title}ms` : undefined}
       >
         {hero.title}
       </h1>
 
       <p
         class:list={['hero__subtitle', { entrance }]}
-        style={entrance ? `--delay:${subtitleDelay}ms` : undefined}
+        style={entrance ? `--delay:${delays.subtitle}ms` : undefined}
       >
         {hero.subtitle}
       </p>
 
       <p
         class:list={['hero__desc', { entrance }]}
-        style={entrance ? `--delay:${descDelay}ms` : undefined}
+        style={entrance ? `--delay:${delays.desc}ms` : undefined}
       >
         {descriptionLines.map((line) => <span>{line}</span>)}
       </p>
@@ -79,11 +72,11 @@ const decoDelay = entrance ? 340 : 0;
       {showDecoration && (
         <p
           class:list={['hero__deco', { entrance }]}
-          style={entrance ? `--delay:${decoDelay}ms` : undefined}
+          style={entrance ? `--delay:${delays.deco}ms` : undefined}
         >
           {decorationText}
         </p>
       )}
-    </section>
+    </div>
   )
 }

@@ -11,24 +11,6 @@ export function isExternalUrl(url: string): boolean {
   return /^https?:\/\//i.test(url);
 }
 
-/** 从 url 推导简洁的主机名（如 https://blog.example.com/ → blog.example.com） */
-function deriveHost(url: string): string {
-  try {
-    const host = new URL(url).host;
-    return host.replace(/^www\./, '');
-  } catch {
-    return url;
-  }
-}
-
-/** 卡片上展示的地址：优先 displayUrl，缺省时自动从 url 推导 */
-export function displayUrlOf(link: SiteLink): string {
-  const explicit = link.displayUrl?.trim();
-  if (explicit) return explicit;
-  if (!isExternalUrl(link.url)) return link.url;
-  return deriveHost(link.url);
-}
-
 /** 渲染用链接属性：站内链接同页跳转，站外链接新标签打开 */
 export function linkTarget(link: SiteLink): { target: string; rel?: string } {
   if (!isExternalUrl(link.url)) return { target: '_self' };
