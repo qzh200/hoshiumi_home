@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.2.10",
+    "astro": "^7.3.0",
     "lucide-static": "^1.39.0",
     "tailwindcss": "^4.3.3",
     "yaml": "^2.9.0",
