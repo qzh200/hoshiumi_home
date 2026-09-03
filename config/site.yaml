@@ -115,12 +115,12 @@ links:
     url: https://blog.hoshiumi.xyz
     icon: lucide:book-open
 
-  - id: r2
+  - id: cloud
     enabled: true
-    title: R2
+    title: cloud
     name: 星海云仓
     description: 文件与资源
-    url: https://r2.hoshiumi.xyz
+    url: https://drive.hoshiumi.xyz
     icon: lucide:cloud
 
   - id: status
