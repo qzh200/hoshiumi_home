@@ -76,12 +76,22 @@ function collectIconNames() {
   return names;
 }
 
-/** 读取并清理一个 lucide 图标 SVG */
+/**
+ * 读取并清理一个 lucide 图标 SVG。
+ *
+ * 注意点：lucide 的图标 SVG 根标签自带 `width="24" height="24"`，需要剥掉让 CSS
+ * 接管尺寸。但只能用 `<svg` 起始标签锚定去剥——`/g` 全局会把子元素（典型如
+ * `<rect width="20" height="14">`）的尺寸也一起误伤，导致 rect 默认 0×0，
+ * 像 monitor 这种"屏幕"元素就直接消失，只剩底部支架线条。
+ * 历史 bug：2026-09 前曾用 `/\s(width|height)="\d+"/g` 全局剥，造成
+ * `lucide:monitor` 渲染异常。
+ */
 function readLucideIcon(name) {
   const file = join(LUCIDE_ICONS_DIR, `${name}.svg`);
   if (!existsSync(file)) return null;
   return readFileSync(file, 'utf8')
-    .replace(/\s(width|height)="\d+"/g, '')
+    .replace(/<svg((?:[^>])*?)\s+width="\d+"/, '<svg$1')
+    .replace(/<svg((?:[^>])*?)\s+height="\d+"/, '<svg$1')
     .replace(/\n\s*/g, ' ');
 }
 
