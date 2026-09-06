@@ -1,81 +1,79 @@
-# Hoshiumi Start Page / Portal
+# Hoshiumi 主页 / 入口页
 
-一个**安静、空灵、配置驱动**的个人起始页 / 入口页（Start Page）主题，
-基于 **Astro + Tailwind CSS** 构建，纯静态输出，可直接部署到 **Cloudflare Pages**。
+一个安静、空灵、**配置驱动**的个人起始页。
+基于 Astro + Tailwind CSS，纯静态输出，可直接托管到 Cloudflare Pages。
 
-**Hoshiumi / 星海日和**
-**于群星与潮汐之间，记录旅途与幻想**
+> **Hoshiumi / 星海日和**
+> 于群星与潮汐之间，记录旅途与幻想
+>
+> 设计：日系 · 清新 · 星海 · 梦幻 · 轻二次元 · 柔和 · 空灵
+> 布局：桌面端「左简介 / 右卡片」双栏；移动端纵向堆叠
 
-> 设计：日系 · 清新 · 星海 · 梦幻 · 轻二次元 · 柔和 · 空灵。
-> 布局：桌面端「**左简介 / 右卡片**」双栏门户，移动端纵向堆叠。
+## 这是什么
 
----
+一个**只需要改 YAML 就能换所有内容**的门户站。头像、站名、标语、社交链接、右侧
+入口卡片、深浅主题、背景、SEO 元数据——**全部在 `config/site.yaml` 一份文件里**。
 
-## 项目截图
+适合想"挂一张个人主页"但又不想折腾 CMS / 后端 / 数据库的人。
 
-> TODO：在此放置桌面端 / 移动端 / 深色模式截图。
+## 功能要点
 
-## 特性
-
-- 📄 **纯静态**：无数据库、无后端、无登录、无 CMS，产物可直接托管
-- ⚙️ **配置驱动**：站名、标语、卡片、社交、主题色、背景、动画、SEO……
-  全部集中在 `config/site.yaml`
-- 🧩 **Zod 校验**：配置错误时 `pnpm build` 直接失败并给出中文字段级提示
-- 🖼️ **左简介 / 右卡片**：左侧头像 + 站名 + 标语 + 社交图标，右侧入口卡片成块
-- 🃏 **卡片自动生成**：`links[]` 每一项自动生成一张极简卡片（图标 + 英文名 + 中文名 + 一句话）
+- 📄 **纯静态**：无数据库、无后端、无登录、无 CMS
+- ⚙️ **配置驱动**：所有内容集中在 `config/site.yaml`
+- 🧩 **Zod 校验**：YAML 写错，`pnpm build` 直接失败，并给中文字段级提示
+- 🖼️ **左简介 / 右卡片**：头像 + 站名 + 标语 + 社交 + 入口卡片
+- 🃏 **卡片自动生成**：`links[]` 每项自动生成一张极简卡片
 - 🌙 **浅色 / 深色 / 跟随系统**：localStorage 持久化，首帧无闪烁
-- ✨ **克制的背景**：淡蓝紫粉渐变 + 柔和光斑 + 少量星光 + 极弱噪点（纯 CSS）
-- ♿ **无障碍**：语义化 HTML、键盘可达、focus-visible、reduced-motion
-- 📈 **SEO**：title / description / canonical / Open Graph / Twitter Card / JSON-LD
-- 🚀 **性能优先**：几乎零运行时 JS，无动画库、无外部字体请求
+- ✨ **克制背景**：纯 CSS，极光 / 星光 / 噪点可选
+- ♿ **无障碍**：语义化 HTML、键盘可达、focus-visible、尊重 reduced-motion
+- 📈 **SEO**：title / description / canonical / OG / Twitter Card / JSON-LD
+- 🚀 **轻量**：几乎零运行时 JS，无动画库、无外部字体请求
 
-## 快速开始
+## 开始用
 
-环境要求：Node.js ≥ 22.12，pnpm ≥ 10。
+环境：Node.js ≥ 22.12，pnpm ≥ 10。
 
 ```bash
 pnpm install
-pnpm dev          # 本地开发 http://localhost:4321
-pnpm build        # 构建静态站点，输出到 dist/
+pnpm dev          # http://localhost:4321
+pnpm build        # → dist/
 pnpm check        # 类型检查
 ```
 
-## 配置你的站点
+## 怎么改
 
-只需要编辑 `config/site.yaml`（已带完整中文注释），
-以及替换 `public/` 下的图标与图片。
+绝大多数情况下你只需要改两个地方：
 
-### 添加一个站点（右侧卡片）
+1. **`config/site.yaml`**：站名、卡片、社交、主题色、背景、SEO（每项都带中文注释）
+2. **`public/images/`**：头像、OG 分享图、favicon
 
-在 `config/site.yaml` 的 `links:` 下追加一项即可，**无需修改任何源码**：
+### 加一个入口卡片
 
 ```yaml
-- id: github
-  enabled: true
-  title: GitHub
-  name: 我的代码
-  description: 项目与源码
-  url: https://github.com/qzh200
-  icon: lucide:github    # https://lucide.dev/icons（github 等品牌图标已内置）
+links:
+  - id: github
+    enabled: true
+    title: GitHub
+    name: 我的代码
+    description: 项目与源码
+    url: https://github.com/qzh200
+    icon: lucide:github    # 到 https://lucide.dev/icons 找，GitHub 等品牌图标已内置
 ```
 
-卡片**顺序即 `links:` 数组顺序**，无需 `order` 字段。
+卡片**顺序即数组顺序**。
 
-> 若把 `layout.type` 改为 `bento`，可再给个别卡片加
-> `featured: true` 与 `size: large`（跨整行大卡）。
+> 把 `layout.type` 改成 `bento` 可以做网格布局；个别卡片还能加 `featured: true` + `size: large` 跨整行。
 
-### 删除 / 隐藏一个站点
+### 临时关掉一个卡片
 
 ```yaml
 - id: sink
-  enabled: false   # ← false 即隐藏（保留配置，随时可恢复）
+  enabled: false
 ```
 
-整段删除同样可行。
+或者整段删掉——两者等价。
 
-### 添加社交图标（左侧）
-
-在 `config/site.yaml` 的 `social:` 列表中添加：
+### 加一个社交图标
 
 ```yaml
 social:
@@ -83,19 +81,11 @@ social:
     label: 给我写信
     url: mailto:hello@example.com
     icon: lucide:mail
-  - enabled: true
-    label: GitHub
-    url: https://github.com/qzh200
-    icon: lucide:github
 ```
 
-> `rss`、`mail` 等为 Lucide 图标；GitHub / X / Telegram / Bilibili / 微信
-> 等**品牌图标已内置兜底**（Lucide 上游移除了品牌图标），直接写
-> `lucide:github` 即可使用。
+> `lucide:rss` / `lucide:mail` 是 Lucide 通用图标；`lucide:github` / `lucide:bilibili` 等品牌图标已经做了内置兜底（Lucide 上游移除了品牌图标）。
 
-### 修改主题颜色
-
-编辑 `theme:` 段落，全部为 6 位十六进制色：
+### 改主题色
 
 ```yaml
 theme:
@@ -118,105 +108,80 @@ theme:
     bgOpacity: 0.6
 ```
 
-颜色会被自动编译为 CSS 变量供全站引用，无需修改任何 CSS。
+填十六进制色，YAML → CSS 变量在构建期自动完成，不需要碰任何 CSS。
 
-### 修改背景
-
-编辑 `background:` 段落：
+### 改背景
 
 ```yaml
 background:
   type: aurora            # aurora（光斑+渐变） / minimal（素净）
   image:
-    enabled: false        # 启用整幅背景图（放到 public/）
+    enabled: false
     src: /images/background.webp
-  stars:
-    enabled: true
-    count: 26             # 星星数量，克制优先
+  stars: { enabled: true, count: 26 }
   glow: true
   noise: true
   gradient: true
 ```
 
-### Dark Mode
-
-右上角按钮在 浅色 → 深色 → 跟随系统 间循环，选择写入 `localStorage`，
-未选择时跟随 `prefers-color-scheme`；深色模式采用深蓝 / 靛蓝基调。
-
-### 替换图标与图片
+### 替换图片
 
 ```
 public/
-├── favicon.svg          # 网站图标
+├── favicon.svg
 └── images/
-    ├── avatar.webp      # 头像图片（建议 1:1 正方形，WebP/PNG 均可）
-    └── og.svg           # 社交分享图占位（建议替换为 1200×630 图片）
+    ├── avatar.webp      # 头像，建议 1:1
+    └── og.svg           # 社交分享图占位，建议 1200×630
 ```
 
-替换后同步修改 `config/site.yaml` 中的对应路径。
+## 部署到 Cloudflare Pages
 
-## Cloudflare Pages 部署
+1. 推 GitHub，Cloudflare Dashboard → **Workers & Pages → Pages → Connect to Git**
+2. 配置：
 
-1. 把项目推送到 GitHub，进入 Cloudflare Dashboard → **Workers & Pages → Pages → Connect to Git**；
-2. 按下面配置：
+   | 项                       | 值           |
+   | ------------------------ | ------------ |
+   | Framework preset         | Astro        |
+   | Build command            | `pnpm build` |
+   | Build output directory   | `dist`       |
+   | Environment              | 无需任何变量 |
 
-   | 项目           | 值           |
-   | -------------- | ------------ |
-   | Framework preset | Astro      |
-   | Build command  | `pnpm build` |
-   | Build output directory | `dist` |
-   | Root directory | `/`（默认）  |
-   | Environment    | 无需任何变量  |
+3. **Save and Deploy**
 
-3. 点击 **Save and Deploy**。
+> 也可以本地 `pnpm build` 后，把 `dist/` 拖到 Pages（Direct Upload）。
 
-> 也可 **Direct Upload**：本地 `pnpm build` 后把 `dist/` 拖入 Pages 即可。
-
-### 绑定自定义域名
-
-1. Pages 项目 → **Custom domains → Set up a custom domain**，输入 `hoshiumi.xyz`；
-2. 按提示添加 DNS 记录（`CNAME` 到 Pages 地址，或由 Cloudflare 自动创建）；
-3. 等待证书生效，即可通过 `https://hoshiumi.xyz` 访问。
+绑定自定义域名：Pages 项目 → **Custom domains → Set up a custom domain**，按提示配
+DNS（`CNAME` 到 Pages 地址，或由 Cloudflare 自动创建），等证书生效即可。
 
 ## 项目结构
 
 ```
 ├── config/
-│   └── site.yaml            # ★ 站点配置（绝大多数情况下只改这里）
-├── public/
-│   ├── favicon.svg
-│   ├── robots.txt
-│   └── images/              # avatar / og 等静态资源
+│   └── site.yaml            # ★ 站点配置（绝大多数情况只改这一个）
+├── public/                  # favicon、images、robots.txt
 ├── scripts/
 │   └── generate-icons.mjs   # 构建前自动生成 src/generated/site-icons.ts
 ├── src/
 │   ├── components/          # Background / Hero / SocialLinks / SiteGrid /
 │   │                        # SiteCard / ThemeToggle / Footer / Icon
-│   ├── config/              # 配置加载层
-│   │   ├── types.ts         #   枚举与类型（单一来源）
-│   │   ├── schema.ts        #   Zod Schema 与中文错误提示
-│   │   ├── loader.ts        #   site.yaml(?raw 内联) → 校验 → SiteConfig
-│   │   ├── icons.ts         #   图标运行时查表（生成产物）
-│   │   └── helpers.ts       #   派生工具
-│   ├── layouts/Layout.astro # SEO + 主题 CSS 变量 + 主题引导脚本
-│   ├── pages/index.astro    # 唯一页面（左右分栏）
-│   └── styles/global.css    # 全站样式（消费 CSS 变量，不写死品牌色）
+│   ├── config/              # 加载层：types / schema / loader / icons / helpers
+│   ├── layouts/Layout.astro
+│   ├── pages/index.astro
+│   └── styles/global.css
 ├── astro.config.mjs
-├── package.json
 └── tsconfig.json
 ```
 
-> `src/generated/` 由构建自动生成（`pnpm dev / build / check` 前自动执行
-> `scripts/generate-icons.mjs`），已加入 .gitignore，无需提交。
+> `src/generated/` 是构建产物，已 `.gitignore`。
 
 数据流：
 
 ```text
 config/site.yaml
-      ↓ 构建期：?raw 内联 + scripts/generate-icons.mjs 提取图标
+      ↓ 构建期：?raw 内联 + 提取图标
    Zod 校验（失败即中断构建）
       ↓
-  SiteConfig（强类型，运行期零文件 IO）
+  SiteConfig（强类型，运行时零文件 IO）
       ↓
   Astro 组件只读渲染
 ```
@@ -224,20 +189,20 @@ config/site.yaml
 ## 常见问题
 
 **改了 site.yaml 但 dev 页面没变？**
-`config/` 不在 Astro 的监听范围内，修改后请重启 `pnpm dev`；构建不受影响。
+`config/` 不在 Astro 监听范围内，重启 `pnpm dev` 即可；构建不受影响。
 
-**图标怎么找？**
-到 https://lucide.dev/icons 搜索，写成 `lucide:名称` 即可。
-构建前的生成脚本会校验图标是否存在，写错会直接报错提示。
+**图标写错了会怎样？**
+构建前的生成脚本会校验，写错直接报错并指出问题图标名。
 
-**用 wrangler / Cloudflare Workers 构建报错？**
-配置与图标都在打包期内联、运行时零文件 IO，纯静态构建和 Cloudflare
-自动追加的 `@astrojs/cloudflare` 适配器流程均兼容，无需额外配置。
+**想不显示某个区域？**
+- 隐藏顶部：把 `hero.enabled` 设 `false`
+- 隐藏页脚：把 `footer.enabled` 设 `false`
+- 隐藏主题切换按钮：`theme.allowSwitch: false`
+- 隐藏社交图标行：`social: []`
 
-**不想要某个区域？**
-`hero.enabled` / `footer.enabled` 设 `false`；`theme.allowSwitch: false` 隐藏主题按钮；
-`social: []` 隐藏社交图标行。
+**性能怎么样？**
+几乎零运行时 JS，无动画库，无外部字体请求；首屏 SSR 渲染好骨架。
 
-## License
+## 许可
 
 [MIT](./LICENSE)
