@@ -131,13 +131,13 @@ links:
     url: https://status.hoshiumi.xyz
     icon: lucide:activity
 
-  - id: comment
+  - id: stats
     enabled: true
-    title: Comment
-    name: 星语
-    description: 评论与互动
-    url: https://comment.hoshiumi.xyz
-    icon: lucide:message-circle
+    title: Observatory
+    name: 星海观测台
+    description: 全站实时流量分析
+    url: https://stats.hoshiumi.xyz
+    icon: lucide:bar-chart-3
 
   - id: sink
     enabled: true
