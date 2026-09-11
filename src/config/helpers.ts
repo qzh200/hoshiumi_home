@@ -11,10 +11,9 @@ export function isExternalUrl(url: string): boolean {
   return /^https?:\/\//i.test(url);
 }
 
-/** 渲染用链接属性：站内链接同页跳转，站外链接新标签打开 */
-export function linkTarget(link: SiteLink): { target: string; rel?: string } {
-  if (!isExternalUrl(link.url)) return { target: '_self' };
-  return { target: '_blank', rel: 'noopener noreferrer' };
+/** 渲染用链接属性：所有链接均在当前窗口跳转，不开新标签 */
+export function linkTarget(link: SiteLink): { target: string } {
+  return { target: '_self' };
 }
 
 /** 只保留 enabled: true 的链接（顺序保持 YAML 数组顺序） */
