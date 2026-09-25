@@ -147,6 +147,14 @@ links:
     url: https://sink.hoshiumi.xyz
     icon: lucide:link
 
+  - id: ip
+    enabled: true
+    title: IP
+    name: 星海坐标
+    description: IP 查询与网络诊断
+    url: https://ip.hoshiumi.xyz
+    icon: lucide:globe
+
 # -----------------------------------------------------------------------------
 # 参考：添加 GitHub 等站外链接（复制并取消注释即可）
 # 提示：github / x / telegram / bilibili / wechat 为内置品牌图标兜底，
